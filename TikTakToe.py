@@ -37,37 +37,34 @@ def checkHWim(gameBoard, player):
     output
     - winner (bool)
     '''
-    global winner
-
+    
     for row in gameBoard:
-       list(row).count(player)
-       
-       if list(row).count(player)==list(row).__len__():
-          winner=True
+       playerCountRow = row.count(player)   
+       if playerCountRow==len(row):
           print("palyer", player," win the gmae by HR.")
+          return(True)
 
-    return(winner)
+    return(False)
 
 # Check Win Vertical
 def checkVWim(gameBoard, player):
     '''
     Check if the game met the condiotn for a vertical victory.
-    input values
+    - Input values
     - game board 3x3 2D matrix
     - player either 1 or 2
-    output
+    - Output value
     - winner (bool)
     
     Comment: Should remove Hardcoded values
     '''
-    global winner
-
-    for col in range(list(gameBoard).__len__()):
-        if gameBoard[0][col] == gameBoard[1][col] == gameBoard[2][col] != 0:
-            winner=True
+    
+    for col in range(len(gameBoard)):
+        if gameBoard[0][col] == player and gameBoard[1][col] == player and gameBoard[2][col] == player:
             print("palyer", player," win the gmae by VR.")
+            return(True)
 
-    return(winner)
+    return(False)
 
 # Check D1
 def checkD1Win(gameBoard, player):
@@ -81,13 +78,11 @@ def checkD1Win(gameBoard, player):
     
     Comment: Should remove Hardcoded values
     '''
-    global winner
 
-    if gameBoard[0][0] == gameBoard[1][1] == gameBoard[2][2] != 0:
-        winner=True
-        print("palyer", player," win the gmae by Stright Diagonal.")
-            
-    return(winner)
+    if gameBoard[0][0] == player and gameBoard[1][1] == player and gameBoard[2][2] == player:
+        print("player", player," win the gmae by Stright Diagonal.")
+        return(True)    
+    return(False)
 
 # Check D2
 def checkD2Win(gameBoard, player):
@@ -101,13 +96,12 @@ def checkD2Win(gameBoard, player):
     
     Comment: Should remove Hardcoded values
     '''
-    global winner
 
-    if gameBoard[0][2] == gameBoard[1][1] == gameBoard[2][0] != 0:
-        winner=True
-        print("palyer", player," win the gmae by Reverse Diagonal.")
-        
-    return(winner)
+    if gameBoard[0][2] == player and gameBoard[1][1] == player and gameBoard[2][0] == player:
+        print("player", player," win the gmae by Reverse Diagonal.")
+        return(True)
+    
+    return(False)
 
 # Check if the game draw
 def checkDraw(gameBoard):
@@ -133,6 +127,38 @@ def checkDraw(gameBoard):
             
     return(gaemDraw)
 
+def checkGameStatus(gameBoard,player):
+    '''
+    Check game status, return True if final state.
+    Return also the type of final state:
+    - H Horizontal victory
+    - V Vertical victory
+    - D1 and D2 strignt or reverse diagonal
+    - Draw
+    Input
+    - game board 3x3 2D matrix
+    - palyer
+    output
+    - True / False - Final state
+    - Player
+    - Type of final state 
+    
+    Comment: Uses already developed funcitons
+    '''
+    
+    if checkHWim(gameBoard,player):
+        return(True, player, 'H')
+    elif checkVWim(gameBoard,player):
+        return(True, player, 'V')
+    elif checkD1Win(gameBoard,player):
+        return(True, player, 'D1')
+    elif checkD2Win(gameBoard,player):
+        return(True, player, 'D2')
+    elif checkDraw(gameBoard):
+        return(True, player, 'Draw')
+    
+    return(False)
+
 def updateStats(gameStats, player, column_choice, row_choice, gameTurn):
     print(player, column_choice, row_choice)
     gameStats[gameTurn-1]=(str(column_choice) + ':' + str(row_choice))
@@ -140,6 +166,31 @@ def updateStats(gameStats, player, column_choice, row_choice, gameTurn):
     print(gameStats)
     
     return(gameStats)
+
+def interactiveMove(player):
+    cellCheck = True
+    
+    while cellCheck:    
+        x = input("What column do you want to play? (0, 1, 2): ")
+        y = input("What row do you want to play? (0, 1, 2): ")
+
+        if gameBoard[int(x)][int(y)] == 0:
+            gameBoard[int(x)][int(y)] = player
+            #updateStats(gameStats, player, x, y, gameTurn)
+            cellCheck = False
+        else:
+            print("cell already selected, pls. chose a different cell")
+    
+    return(x,y)
+
+
+def checkValidMove(x, y, gameBoard):
+     
+    if gameBoard[int(x)][int(y)] == 0:
+            return(True)
+            
+    return(False)
+
 
 
 # Update Bard Game
@@ -168,35 +219,37 @@ def writeGameStats(gameStatss):
     with open('C:/Temp/EITCA_AI/gameStatss.csv', 'a') as f:
         f.write("\n" + str(gameStats))
 
-
-while gameStatsus:
+def game(gameStatsus, gameTurn, gameBoard, player, winner, gameStats):
+    while gameStatsus:
     
-    gameTurn = gameTurn + 1    # Count the game turn
+        gameTurn = gameTurn + 1    # Count the game turn
     
-    print('Turn ', gameTurn, 'Player ', player)
+        print('Turn ', gameTurn, 'Player ', player)
 
-    gameBoard = updateBoardGame(gameBoard, player, gameTurn)
+        gameBoard = updateBoardGame(gameBoard, player, gameTurn)
      
-    winner = checkHWim(gameBoard, player)
+        winner = checkHWim(gameBoard, player)
 
-    winner = checkVWim(gameBoard, player)
+        winner = checkVWim(gameBoard, player)
 
-    winner = checkD1Win(gameBoard, player)
+        winner = checkD1Win(gameBoard, player)
 
-    winner = checkD2Win(gameBoard, player)
+        winner = checkD2Win(gameBoard, player)
     
-    gameDraw = checkDraw(gameBoard) 
+        gameDraw = checkDraw(gameBoard) 
         
-    if winner:
-        gameStatsus = False
-        gameStats[9]=(gameTurn, player)
+        if winner:
+            gameStatsus = False
+            gameStats[9]=(gameTurn, player)
         
-    if gameDraw:
-        gameStatsus = False
-        gameStats[9]=(gameTurn, 0)
+        if gameDraw:
+            gameStatsus = False
+            gameStats[9]=(gameTurn, 0)
     
     player = players.__next__()
 
-# print(gameStats)
-writeGameStats(gameStats)
-print('End Game')
+    # print(gameStats)
+    writeGameStats(gameStats)
+    print('End Game')
+
+#game(gameStatsus, gameTurn, gameBoard, player, winner, gameStats)
