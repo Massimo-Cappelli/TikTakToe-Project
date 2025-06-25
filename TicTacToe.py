@@ -10,7 +10,7 @@ import csv
 import pandas as pd
 
 gameBoard = [
-    [0,0,0],
+    [1,0,0],
     [0,0,0],
     [0,0,0]
 ]
@@ -31,10 +31,12 @@ gameDraw = False                                    # Game drav
 def checkHWim(gameBoard, player):
     '''
     Check if the game met the condiotn for a horizontal victory.
-    input values
+    
+    Input
     - game board 3x3 2D matrix
     - player either 1 or 2
-    output
+    
+    Output
     - winner (bool)
     '''
     
@@ -50,10 +52,12 @@ def checkHWim(gameBoard, player):
 def checkVWim(gameBoard, player):
     '''
     Check if the game met the condiotn for a vertical victory.
-    - Input values
-    - game board 3x3 2D matrix
+    
+    Input
+    - gameBoard 3x3 2D matrix
     - player either 1 or 2
-    - Output value
+    
+    Output
     - winner (bool)
     
     Comment: Should remove Hardcoded values
@@ -70,10 +74,12 @@ def checkVWim(gameBoard, player):
 def checkD1Win(gameBoard, player):
     '''
     Check if the game met the condiotn for a stright diagonal vicotry.
-    input values
-    - game board 3x3 2D matrix
+    
+    Input
+    - gameBoard 3x3 2D matrix
     - player either 1 or 2
-    output
+    
+    Output
     - winner (bool)
     
     Comment: Should remove Hardcoded values
@@ -88,9 +94,11 @@ def checkD1Win(gameBoard, player):
 def checkD2Win(gameBoard, player):
     '''
     Check if the game met the condiotn for a reverse diagonal vicotry.
-    input values
-    - game board 3x3 2D matrix
+    
+    input
+    - gameBoard 3x3 2D matrix
     - player either 1 or 2
+    
     output
     - winner (bool)
     
@@ -108,9 +116,11 @@ def checkDraw(gameBoard):
 
     '''
     Check if the game met the condiotn for a draw.
-    input values
-    - game board 3x3 2D matrix
-    output
+    
+    Input
+    - gameBoard 3x3 2D matrix
+    
+    Output
     - gameDraw (bool)
     
     Comment: Should remove Hardcoded values
@@ -135,9 +145,11 @@ def checkGameStatus(gameBoard,player):
     - V Vertical victory
     - D1 and D2 strignt or reverse diagonal
     - Draw
+    
     Input
     - game board 3x3 2D matrix
     - palyer
+    
     output
     - True / False - Final state
     - Player
@@ -166,6 +178,21 @@ def updateStats(gameStats, player, x, y, gameTurn):
         
     return(gameStats)
 
+def selectMoveHuman():
+    '''
+    Prompt the player to select the move.
+        
+    Input
+       
+    output
+    - x
+    - y
+   '''
+    x = input("What column do you want to play? (0, 1, 2): ")
+    y = input("What row do you want to play? (0, 1, 2): ")
+
+    return(x,y)
+
 def interactiveMove(player):
     '''
     Prompt the player to select the move.
@@ -191,10 +218,23 @@ def interactiveMove(player):
         else:
             print("cell already selected, pls. chose a different cell")
     
-    return(x,y)
+    return(x, y)
 
 
 def checkValidMove(x, y, gameBoard):
+    '''
+    Check if the move is valid or the cell is already taken.
+    
+    Input
+    - x
+    - y 
+    - gameBoard 3x3 2D matrix
+    
+    Output
+    - bool
+    
+    Comment: Should remove Hardcoded values
+    '''
      
     if gameBoard[int(x)][int(y)] == 0:
             return(True)
@@ -208,7 +248,11 @@ def updateGameBoard(x, y, gameBoard, player):
 
 def game(gameBoard, player, gaemTurn):
 
-    interactiveMove()
+    move = selectMoveHuman()
+    
+    print(checkValidMove(move[0], move[1], gameBoard))
+    
+game(gameBoard, player, gameTurn)
 
 '''
 # Update Bard Game
